@@ -22,7 +22,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-[rgba(31,_33,_33,_1)] text-gray-100 min-h-screen p-6">
+    <div className="bg-[rgba(31,_33,_33,_1)] text-gray-100 min-h-dvh pt-45 px-6">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold mb-2">System Operation Settings</h1>
         <div className="flex items-center">

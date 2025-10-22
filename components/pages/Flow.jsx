@@ -79,7 +79,7 @@ const Flow = () => {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-[rgba(31,_33,_33,_1)] text-gray-100">
+    <div className="w-full min-h-dvh pt-45 bg-[rgba(31,_33,_33,_1)] text-gray-100">
       <div className="p-6">
 
         <div className="mb-8 flex justify-between items-center">

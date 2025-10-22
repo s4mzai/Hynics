@@ -115,7 +115,7 @@ const Queue = () => {
   }, [isPaused]);
 
   return (
-    <div className="bg-[rgba(31,_33,_33,_1)] text-gray-100 min-h-screen p-6">
+    <div className="bg-[rgba(31,_33,_33,_1)] text-gray-100 min-h-dvh pt-45 px-6">
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
           <div className="bg-[rgba(38,_40,_40,_1)] rounded-lg p-6 w-full max-w-md">

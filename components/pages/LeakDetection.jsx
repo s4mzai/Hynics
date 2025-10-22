@@ -74,7 +74,7 @@ const LeakDetection = () => {
   }, [cards]);
 
   return (
-    <div className="bg-[rgba(31,_33,_33,_1)] text-gray-100 p-5 min-h-screen">
+    <div className="bg-[rgba(31,_33,_33,_1)] pt-45 text-gray-100 p-5 min-h-dvh">
       <div className="mb-4 bg-[rgba(38,_40,_40,_1)] p-4 rounded-lg">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-white">Hydrogen Leak Detection System</h2>
