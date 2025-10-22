@@ -204,7 +204,7 @@ const Temperature = () => {
   }, [sensorData]);
 
   return (
-    <div className="flex flex-col min-h-dvh pt-45 bg-[rgba(31,_33,_33,_1)]">
+    <div className="flex flex-col py-10 bg-[rgba(31,_33,_33,_1)]">
       {/* Header */}
       <header className="bg-[rgba(31,_33,_33,_1)] shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
