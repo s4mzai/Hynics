@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Temperature from "./Temperature";
+import Temp from "../Temp";
 
 const PressureTemperatureMonitoring = () => {
   // 🧱 Initial Cascade Tanks
@@ -76,8 +76,8 @@ const PressureTemperatureMonitoring = () => {
   }, []);
 
   return (
-    <div>
-      <div className="bg-[#1f2121]  text-gray-100 flex flex-col items-center pt-45 py-10 px-6">
+    <div className="bg-[#1f2121] text-gray-100 pt-45 px-6 flex flex-col gap-5 py-10">
+      <div className="flex flex-col items-center">
         <h1 className="text-4xl font-bold text-white mb-10 text-center tracking-wide">
           Hydrogen Dispenser Monitoring Panel
         </h1>
@@ -219,7 +219,8 @@ const PressureTemperatureMonitoring = () => {
           </div>
         </div>
       </div>
-      <Temperature/>
+      <Temp/>
+      
     </div>
   );
 };
