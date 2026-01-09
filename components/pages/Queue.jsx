@@ -328,78 +328,78 @@ export default function Queue() {
       {/* Main Layout */}
       <div className="flex gap-4 flex-1">
         {/* Billing Section - 25% width */}
-        <div className="w-1/4 bg-[rgba(38,40,40,1)] rounded-lg p-6 shadow-lg border border-gray-700">
-          <h2 className="text-2xl font-bold mb-6 text-white border-b border-gray-600 pb-3">Billing Section</h2>
+        <div className="w-1/4 bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700">
+          <h2 className="text-2xl font-bold mb-6 text-white border-b border-gray-600 border-opacity-50 pb-4">Billing Section</h2>
           
           {/* Current Vehicle Filling */}
-          <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-white mb-3">Current Vehicle</h3>
-            <div className="space-y-2 text-sm">
+          <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4 border border-gray-700 border-opacity-30">
+            <h3 className="text-sm font-semibold text-gray-300 mb-3 uppercase tracking-wide">Current Vehicle</h3>
+            <div className="space-y-2.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-400">Vehicle ID</span>
-                <span className="text-white font-medium">{fillingData.vehicleId}</span>
+                <span className="text-gray-500">Vehicle ID</span>
+                <span className="text-white font-medium text-xs">{fillingData.vehicleId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Vehicle Name</span>
-                <span className="text-white font-medium">{fillingData.vehicleName}</span>
+                <span className="text-gray-500">Vehicle Name</span>
+                <span className="text-white font-medium text-xs">{fillingData.vehicleName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Driver</span>
+                <span className="text-gray-500">Driver</span>
                 <span className="text-white font-medium text-xs">{fillingData.driverName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Payment Mode</span>
+                <span className="text-gray-500">Payment Mode</span>
                 <span className="text-white font-medium text-xs">{fillingData.paymentMode}</span>
               </div>
             </div>
           </div>
 
           {/* Filling Progress */}
-          <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-white mb-3">Filling Progress</h3>
-            <div className="space-y-3">
+          <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4 border border-gray-700 border-opacity-30">
+            <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Filling Progress</h3>
+            <div className="space-y-3.5">
               <div>
-                <div className="flex justify-between mb-2 text-sm">
-                  <span className="text-gray-400">Filled</span>
+                <div className="flex justify-between mb-2.5 text-sm">
+                  <span className="text-gray-500">Filled</span>
                   <span className="text-blue-400 font-bold">{fillingData.percentageFilled.toFixed(1)}%</span>
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-gray-700 bg-opacity-50 rounded-full h-3 overflow-hidden border border-gray-600 border-opacity-30">
                   <div
-                    className="bg-gradient-to-r from-blue-500 to-blue-400 h-3 rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 h-3 rounded-full transition-all duration-300 shadow-lg shadow-blue-500/20"
                     style={{ width: `${fillingData.percentageFilled}%` }}
                   ></div>
                 </div>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Mass Filled</span>
+                <span className="text-gray-500">Mass Filled</span>
                 <span className="text-white font-bold">{fillingData.massFilled.toFixed(2)} / {fillingData.totalMass} kg</span>
               </div>
             </div>
           </div>
 
           {/* Bill Calculation */}
-          <div className="bg-[rgba(31,33,33,1)] rounded-lg p-4 border border-blue-900">
-            <h3 className="text-lg font-semibold text-white mb-4 border-b border-gray-600 pb-2">Bill Summary</h3>
+          <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-4 border border-blue-700 border-opacity-40">
+            <h3 className="text-sm font-semibold text-gray-300 mb-4 border-b border-gray-600 border-opacity-50 pb-3 uppercase tracking-wide">Bill Summary</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-400">Mass Filled</span>
+                <span className="text-gray-500">Mass Filled</span>
                 <span className="text-white">{fillingData.massFilled.toFixed(2)} kg</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Rate per kg</span>
+                <span className="text-gray-500">Rate per kg</span>
                 <span className="text-white">₹{PRICE_PER_KG}</span>
               </div>
-              <div className="border-t border-gray-600 pt-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-300">Base Price</span>
-                  <span className="text-white">₹{calculateBill().basePrice.toFixed(2)}</span>
+              <div className="border-t border-gray-600 border-opacity-50 pt-3">
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Base Price</span>
+                  <span className="text-white">{calculateBill().basePrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Tax (10%)</span>
-                  <span className="text-white">₹{calculateBill().tax.toFixed(2)}</span>
+                  <span className="text-gray-500">Tax (10%)</span>
+                  <span className="text-white">{calculateBill().tax.toFixed(2)}</span>
                 </div>
               </div>
-              <div className="border-t border-green-700 pt-3 bg-green-900 bg-opacity-30 rounded px-3 py-2">
+              <div className="border-t border-green-600 border-opacity-50 pt-3 bg-gradient-to-r from-green-900 to-green-900 bg-opacity-25 rounded-lg px-3 py-3">
                 <div className="flex justify-between items-center">
                   <span className="text-green-300 font-semibold">Total Bill</span>
                   <span className="text-2xl font-bold text-green-400">₹{calculateBill().total.toFixed(2)}</span>
@@ -459,39 +459,39 @@ export default function Queue() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto flex-1 mb-6">
+              <div className="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto flex-1 mb-6">
                 {queue.map(item => (
                   <div
                     key={item.id}
                     onClick={() => handleVehicleSelect(item.id)}
-                    className={`bg-[rgba(38,40,40,1)] rounded-lg p-4 shadow-lg border-l-4 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                    className={`bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-5 shadow-md border cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-102 ${
                       selectedVehicleId === item.id
-                        ? 'ring-2 ring-blue-500 border-blue-500'
+                        ? 'ring-2 ring-blue-400 border-blue-400'
                         : item.status === "Complete"
-                          ? "border-green-500"
+                          ? "border-green-500 border-opacity-50"
                           : item.status === "In Progress"
-                            ? "border-blue-500"
+                            ? "border-blue-500 border-opacity-50"
                             : item.status === "Waiting"
-                              ? "border-yellow-500"
-                              : "border-purple-500"
+                              ? "border-yellow-500 border-opacity-50"
+                              : "border-purple-500 border-opacity-50"
                     }`}
                   >
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="text-lg font-bold text-white">{item.name}</h3>
-                        <div className="text-sm text-gray-400">{item.type}</div>
+                        <h3 className="text-lg font-bold text-white leading-tight">{item.name}</h3>
+                        <div className="text-xs text-gray-500 mt-1">{item.type}</div>
                       </div>
-                      <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(item.status)}`}>{item.status}</span>
+                      <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${getStatusColor(item.status)}`}>{item.status}</span>
                     </div>
-                    <div className="text-sm text-gray-400 mb-1">ID: {item.id}</div>
-                    <div className="mt-3 space-y-1">
+                    <div className="text-xs text-gray-500 mb-3 font-mono">ID: {item.id}</div>
+                    <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-400">Driver</span>
-                        <span className="font-medium text-white text-sm">{item.driverName}</span>
+                        <span className="font-medium text-white text-xs">{item.driverName}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">Car Number</span>
-                        <span className="font-medium text-white text-sm">{item.carNumber}</span>
+                        <span className="font-medium text-white text-xs">{item.carNumber}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">Fuel Needed</span>
@@ -499,7 +499,7 @@ export default function Queue() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">Payment Mode</span>
-                        <span className="font-medium text-white text-sm">{item.paymentMode}</span>
+                        <span className="font-medium text-white text-xs">{item.paymentMode}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">ETA</span>
@@ -508,8 +508,8 @@ export default function Queue() {
                         </span>
                       </div>
                       {selectedVehicleId === item.id && (
-                        <div className="mt-2 pt-2 border-t border-blue-500">
-                          <span className="text-xs text-blue-400 font-semibold">✓ Selected for Billing</span>
+                        <div className="mt-3 pt-3 border-t border-blue-400 border-opacity-50">
+                          <span className="text-xs text-blue-300 font-semibold">✓ Selected for Billing</span>
                         </div>
                       )}
                     </div>
@@ -517,22 +517,22 @@ export default function Queue() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-shrink-0">
-                <div className="bg-[rgba(38,40,40,1)] rounded-lg p-4">
-                  <div className="text-gray-400">Total Vehicles</div>
-                  <div className="text-2xl font-bold text-white">{queue.length}</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 flex-shrink-0">
+                <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 border border-gray-700 border-opacity-40 shadow-md">
+                  <div className="text-gray-500 text-xs font-semibold mb-2 uppercase tracking-wide">Total Vehicles</div>
+                  <div className="text-3xl font-bold text-white">{queue.length}</div>
                 </div>
-                <div className="bg-[rgba(38,40,40,1)] rounded-lg p-4">
-                  <div className="text-gray-400">In Progress</div>
-                  <div className="text-2xl font-bold text-blue-400">{queue.filter(item => item.status === "In Progress").length}</div>
+                <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 border border-blue-700 border-opacity-40 shadow-md">
+                  <div className="text-gray-500 text-xs font-semibold mb-2 uppercase tracking-wide">In Progress</div>
+                  <div className="text-3xl font-bold text-blue-400">{queue.filter(item => item.status === "In Progress").length}</div>
                 </div>
-                <div className="bg-[rgba(38,40,40,1)] rounded-lg p-4">
-                  <div className="text-gray-400">Waiting</div>
-                  <div className="text-2xl font-bold text-yellow-400">{queue.filter(item => item.status === "Waiting").length}</div>
+                <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 border border-yellow-700 border-opacity-40 shadow-md">
+                  <div className="text-gray-500 text-xs font-semibold mb-2 uppercase tracking-wide">Waiting</div>
+                  <div className="text-3xl font-bold text-yellow-400">{queue.filter(item => item.status === "Waiting").length}</div>
                 </div>
-                <div className="bg-[rgba(38,40,40,1)] rounded-lg p-4">
-                  <div className="text-gray-400">Scheduled</div>
-                  <div className="text-2xl font-bold text-purple-400">{queue.filter(item => item.status === "Scheduled").length}</div>
+                <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 border border-purple-700 border-opacity-40 shadow-md">
+                  <div className="text-gray-500 text-xs font-semibold mb-2 uppercase tracking-wide">Scheduled</div>
+                  <div className="text-3xl font-bold text-purple-400">{queue.filter(item => item.status === "Scheduled").length}</div>
                 </div>
               </div>
             </div>
@@ -542,75 +542,75 @@ export default function Queue() {
           {activeTab === "system" && (
             <div className="flex-1 flex flex-col gap-4 overflow-y-auto">
               {/* System Status Section */}
-              <div className="bg-[rgba(38,40,40,1)] rounded-lg p-6 shadow-lg border border-gray-700">
-                <h2 className="text-2xl font-bold mb-4 text-white border-b border-gray-600 pb-2">System Status</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-[rgba(31,33,33,1)] rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">Tank Pressure</div>
-                    <div className="text-3xl font-bold text-white">{systemData.tankPressure.toFixed(1)}</div>
-                    <div className="text-gray-500 text-xs mt-1">bar</div>
+              <div className="bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700">
+                <h2 className="text-2xl font-bold mb-5 text-white border-b border-gray-600 border-opacity-50 pb-4">System Status</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                  <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-xl p-5 border border-gray-700 border-opacity-40 shadow-md">
+                    <div className="text-gray-500 text-xs mb-3 font-semibold uppercase tracking-wide">Tank Pressure</div>
+                    <div className="text-3xl font-bold text-white mb-1">{systemData.tankPressure.toFixed(1)}</div>
+                    <div className="text-gray-600 text-xs">bar</div>
                   </div>
-                  <div className="bg-[rgba(31,33,33,1)] rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">H2 Temperature</div>
-                    <div className="text-3xl font-bold text-blue-400">{systemData.h2Temperature.toFixed(1)}</div>
-                    <div className="text-gray-500 text-xs mt-1">°C</div>
+                  <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-xl p-5 border border-blue-700 border-opacity-30 shadow-md">
+                    <div className="text-gray-500 text-xs mb-3 font-semibold uppercase tracking-wide">H2 Temperature</div>
+                    <div className="text-3xl font-bold text-blue-400 mb-1">{systemData.h2Temperature.toFixed(1)}</div>
+                    <div className="text-gray-600 text-xs">°C</div>
                   </div>
-                  <div className="bg-[rgba(31,33,33,1)] rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">H2 Purity</div>
-                    <div className="text-3xl font-bold text-green-400">{systemData.h2Purity.toFixed(2)}</div>
-                    <div className="text-gray-500 text-xs mt-1">%</div>
+                  <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-xl p-5 border border-green-700 border-opacity-30 shadow-md">
+                    <div className="text-gray-500 text-xs mb-3 font-semibold uppercase tracking-wide">H2 Purity</div>
+                    <div className="text-3xl font-bold text-green-400 mb-1">{systemData.h2Purity.toFixed(2)}</div>
+                    <div className="text-gray-600 text-xs">%</div>
                   </div>
-                  <div className="bg-[rgba(31,33,33,1)] rounded-lg p-4">
-                    <div className="text-gray-400 text-sm mb-2">Leakage Detection</div>
-                    <div className={`text-3xl font-bold ${systemData.leakageDetection > 0.007 ? 'text-red-400' : 'text-green-400'}`}>
+                  <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-xl p-5 border border-gray-700 border-opacity-40 shadow-md">
+                    <div className="text-gray-500 text-xs mb-3 font-semibold uppercase tracking-wide">Leakage Detection</div>
+                    <div className={`text-3xl font-bold mb-1 ${systemData.leakageDetection > 0.007 ? 'text-red-400' : 'text-green-400'}`}>
                       {systemData.leakageDetection.toFixed(4)}
                     </div>
-                    <div className="text-gray-500 text-xs mt-1">ppm</div>
+                    <div className="text-gray-600 text-xs">ppm</div>
                   </div>
                 </div>
               </div>
 
               {/* Filling Control Section */}
-              <div className="bg-[rgba(38,40,40,1)] rounded-lg p-6 shadow-lg border border-gray-700 flex-1">
-                <h2 className="text-2xl font-bold mb-4 text-white border-b border-gray-600 pb-2">Filling Control</h2>
+              <div className="bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700 flex-1">
+                <h2 className="text-2xl font-bold mb-5 text-white border-b border-gray-600 border-opacity-50 pb-4">Filling Control</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Filling Info */}
                   <div className="space-y-4">
-                    <div className="bg-[rgba(31,33,33,1)] rounded-lg p-4">
-                      <h3 className="text-lg font-semibold text-white mb-3">Vehicle Information</h3>
-                      <div className="space-y-2 text-sm">
+                    <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 border border-gray-700 border-opacity-40">
+                      <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Vehicle Information</h3>
+                      <div className="space-y-3 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-400">Vehicle ID</span>
-                          <span className="text-white font-medium">{fillingData.vehicleId}</span>
+                          <span className="text-gray-500">Vehicle ID</span>
+                          <span className="text-white font-medium text-xs">{fillingData.vehicleId}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-400">Vehicle Name</span>
-                          <span className="text-white font-medium">{fillingData.vehicleName}</span>
+                          <span className="text-gray-500">Vehicle Name</span>
+                          <span className="text-white font-medium text-xs">{fillingData.vehicleName}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-400">Driver Name</span>
-                          <span className="text-white font-medium">{fillingData.driverName}</span>
+                          <span className="text-gray-500">Driver Name</span>
+                          <span className="text-white font-medium text-xs">{fillingData.driverName}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-400">Payment Mode</span>
-                          <span className="text-white font-medium">{fillingData.paymentMode}</span>
+                          <span className="text-gray-500">Payment Mode</span>
+                          <span className="text-white font-medium text-xs">{fillingData.paymentMode}</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Filling Progress Bar */}
-                  <div className="bg-[rgba(31,33,33,1)] rounded-lg p-4 flex flex-col justify-center">
-                    <h3 className="text-lg font-semibold text-white mb-4">Filling Progress</h3>
+                  <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 flex flex-col justify-center border border-blue-700 border-opacity-30">
+                    <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Filling Progress</h3>
                     <div className="space-y-4">
                       <div>
                         <div className="flex justify-between mb-3">
-                          <span className="text-gray-400">Percentage Filled</span>
+                          <span className="text-gray-500">Percentage Filled</span>
                           <span className="text-2xl font-bold text-blue-400">{fillingData.percentageFilled.toFixed(1)}%</span>
                         </div>
-                        <div className="w-full bg-gray-700 rounded-full h-6 overflow-hidden">
+                        <div className="w-full bg-gray-700 bg-opacity-50 rounded-full h-6 overflow-hidden border border-gray-600 border-opacity-30">
                           <div
-                            className="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-300 h-6 rounded-full transition-all duration-300 flex items-center justify-center"
+                            className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 h-6 rounded-full transition-all duration-300 flex items-center justify-center shadow-lg shadow-blue-500/20"
                             style={{ width: `${fillingData.percentageFilled}%` }}
                           >
                             {fillingData.percentageFilled > 10 && (
@@ -619,15 +619,15 @@ export default function Queue() {
                           </div>
                         </div>
                       </div>
-                      <div className="border-t border-gray-600 pt-4">
-                        <div className="text-gray-400 mb-2">Mass Filling Progress</div>
-                        <div className="space-y-1 text-sm">
+                      <div className="border-t border-gray-600 border-opacity-50 pt-4">
+                        <div className="text-gray-500 text-xs font-semibold uppercase tracking-wide mb-2.5">Mass Filling Progress</div>
+                        <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-300">Filled</span>
+                            <span className="text-gray-500">Filled</span>
                             <span className="text-white font-bold">{fillingData.massFilled.toFixed(2)} kg</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-300">Total Required</span>
+                            <span className="text-gray-500">Total Required</span>
                             <span className="text-white font-bold">{fillingData.totalMass} kg</span>
                           </div>
                         </div>
