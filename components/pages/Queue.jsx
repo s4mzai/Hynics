@@ -6,17 +6,18 @@ const vehicleModels = [
   "H2-Truck 1", "H2-Survey-X", "H2-Van", "H2-Bus", "H2-Forklift"
 ];
 const vehicleTypes = ["Car", "Truck", "Van", "Bus", "Forklift", "Delivery", "Survey"];
+const paymentModes = ["Cash", "Card", "Online Transfer", "Wallet", "Credit"];
 const initialQueueItems = [
-  { id: "DR-001", name: "H2-Car 1", type: "Car", status: "Complete", fuel: 3.1, eta: 0 },
-  { id: "DR-002", name: "H2-Car 2", type: "Car", status: "In Progress", fuel: 3.1, eta: 5 },
-  { id: "DR-003", name: "H2-Delivery-Max", type: "Delivery", status: "Waiting", fuel: 3.1, eta: 8 },
-  { id: "DR-004", name: "OK Complete", type: "Car", status: "Waiting", fuel: 5.2, eta: 11 },
-  { id: "DR-005", name: "OK Complete", type: "Car", status: "Waiting", fuel: 3.1, eta: 15 },
-  { id: "DR-006", name: "H2-Truck 1", type: "Truck", status: "Waiting", fuel: 3.1, eta: 19 },
-  { id: "DR-007", name: "OK Complete", type: "Car", status: "Scheduled", fuel: 5.2, eta: 22 },
-  { id: "DR-008", name: "H2-Survey-X", type: "Survey", status: "Scheduled", fuel: 3.1, eta: 25 },
-  { id: "DR-009", name: "OK Complete", type: "Car", status: "Scheduled", fuel: 3.1, eta: 29 },
-  { id: "DR-010", name: "OK Complete", type: "Car", status: "Scheduled", fuel: 6.8, eta: 33 }
+  { id: "DR-001", name: "H2-Car 1", type: "Car", status: "Complete", fuel: 3.1, eta: 0, driverName: "John Smith", carNumber: "ABC-1234", amountToFill: 3.1, paymentMode: "Card" },
+  { id: "DR-002", name: "H2-Car 2", type: "Car", status: "In Progress", fuel: 3.1, eta: 5, driverName: "Sarah Johnson", carNumber: "XYZ-5678", amountToFill: 3.1, paymentMode: "Cash" },
+  { id: "DR-003", name: "H2-Delivery-Max", type: "Delivery", status: "Waiting", fuel: 3.1, eta: 8, driverName: "Mike Davis", carNumber: "DEF-9012", amountToFill: 3.1, paymentMode: "Online Transfer" },
+  { id: "DR-004", name: "OK Complete", type: "Car", status: "Waiting", fuel: 5.2, eta: 11, driverName: "Emily Brown", carNumber: "GHI-3456", amountToFill: 5.2, paymentMode: "Wallet" },
+  { id: "DR-005", name: "OK Complete", type: "Car", status: "Waiting", fuel: 3.1, eta: 15, driverName: "James Wilson", carNumber: "JKL-7890", amountToFill: 3.1, paymentMode: "Credit" },
+  { id: "DR-006", name: "H2-Truck 1", type: "Truck", status: "Waiting", fuel: 3.1, eta: 19, driverName: "Robert Taylor", carNumber: "MNO-1234", amountToFill: 3.1, paymentMode: "Card" },
+  { id: "DR-007", name: "OK Complete", type: "Car", status: "Scheduled", fuel: 5.2, eta: 22, driverName: "Lisa Anderson", carNumber: "PQR-5678", amountToFill: 5.2, paymentMode: "Cash" },
+  { id: "DR-008", name: "H2-Survey-X", type: "Survey", status: "Scheduled", fuel: 3.1, eta: 25, driverName: "David Martinez", carNumber: "STU-9012", amountToFill: 3.1, paymentMode: "Online Transfer" },
+  { id: "DR-009", name: "OK Complete", type: "Car", status: "Scheduled", fuel: 3.1, eta: 29, driverName: "Jennifer Lee", carNumber: "VWX-3456", amountToFill: 3.1, paymentMode: "Wallet" },
+  { id: "DR-010", name: "OK Complete", type: "Car", status: "Scheduled", fuel: 6.8, eta: 33, driverName: "Christopher White", carNumber: "YZA-7890", amountToFill: 6.8, paymentMode: "Credit" }
 ];
 
 function getStatusColor(status) {
@@ -39,11 +40,11 @@ export default function Queue() {
   const [isPaused, setIsPaused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newVehicle, setNewVehicle] = useState({
-    name: "", type: "", id: "", fuel: 0, eta: 0, status: ""
+    name: "", type: "", id: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: ""
   });
 
   const openAddModal = () => {
-    setNewVehicle({ name: "", type: "", id: "", fuel: 0, eta: 0, status: "" });
+    setNewVehicle({ name: "", type: "", id: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: "" });
     setIsModalOpen(true);
   };
 
@@ -53,12 +54,13 @@ export default function Queue() {
     if (name === "fuel") {
       const fuelValue = parseFloat(value) || 0;
       updatedVehicle.eta = Math.ceil(fuelValue / 0.8);
+      updatedVehicle.amountToFill = fuelValue;
     }
     setNewVehicle(updatedVehicle);
   };
 
   const addNewVehicle = () => {
-    if (!newVehicle.name || !newVehicle.type || !newVehicle.id || newVehicle.fuel <= 0) {
+    if (!newVehicle.name || !newVehicle.type || !newVehicle.id || newVehicle.fuel <= 0 || !newVehicle.driverName || !newVehicle.carNumber || !newVehicle.paymentMode) {
       alert("Please fill all fields with valid values");
       return;
     }
@@ -186,6 +188,55 @@ export default function Queue() {
                   Calculated: Fuel 0.8 kg per minute
                 </div>
               </div>
+              <div>
+                <label className="block text-gray-300 mb-1">Driver Name</label>
+                <input
+                  type="text"
+                  name="driverName"
+                  value={newVehicle.driverName}
+                  onChange={handleInputChange}
+                  className="w-full bg-gray-700 rounded px-3 py-2 text-white"
+                  placeholder="e.g., John Smith"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-1">Car Number</label>
+                <input
+                  type="text"
+                  name="carNumber"
+                  value={newVehicle.carNumber}
+                  onChange={handleInputChange}
+                  className="w-full bg-gray-700 rounded px-3 py-2 text-white"
+                  placeholder="e.g., ABC-1234"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-1">Amount to be Filled (kg)</label>
+                <input
+                  type="number"
+                  name="amountToFill"
+                  value={newVehicle.amountToFill}
+                  onChange={handleInputChange}
+                  className="w-full bg-gray-700 rounded px-3 py-2 text-white"
+                  placeholder="Enter amount in kg"
+                  min={0.1}
+                  step={0.1}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-1">Payment Mode</label>
+                <select
+                  name="paymentMode"
+                  value={newVehicle.paymentMode}
+                  onChange={handleInputChange}
+                  className="w-full bg-gray-700 rounded px-3 py-2 text-white"
+                >
+                  <option value="">Select Payment Mode</option>
+                  {paymentModes.map((mode, index) => (
+                    <option key={index} value={mode}>{mode}</option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="flex justify-end space-x-3 mt-6">
               <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium">
@@ -243,8 +294,20 @@ export default function Queue() {
             <div className="text-sm text-gray-400 mb-1">ID: {item.id}</div>
             <div className="mt-3 space-y-1">
               <div className="flex justify-between">
+                <span className="text-gray-400">Driver</span>
+                <span className="font-medium text-white text-sm">{item.driverName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Car Number</span>
+                <span className="font-medium text-white text-sm">{item.carNumber}</span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-gray-400">Fuel Needed</span>
                 <span className="font-medium text-white">{item.fuel} kg</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Payment Mode</span>
+                <span className="font-medium text-white text-sm">{item.paymentMode}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">ETA</span>
