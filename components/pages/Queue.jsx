@@ -7,7 +7,7 @@ const vehicleModels = [
 ];
 const vehicleTypes = ["Car", "Truck", "Van", "Bus", "Forklift", "Delivery", "Survey"];
 const paymentModes = ["Cash", "Card", "Online Transfer", "Wallet", "Credit"];
-const PRICE_PER_KG = 50; // Price per kg of H2
+const PRICE_PER_KG = 50;
 const initialQueueItems = [
   { id: "DR-001", name: "H2-Car 1", type: "Car", status: "Complete", fuel: 3.1, eta: 0, driverName: "John Smith", carNumber: "ABC-1234", amountToFill: 3.1, paymentMode: "Card" },
   { id: "DR-002", name: "H2-Car 2", type: "Car", status: "In Progress", fuel: 3.1, eta: 5, driverName: "Sarah Johnson", carNumber: "XYZ-5678", amountToFill: 3.1, paymentMode: "Cash" },
@@ -59,6 +59,7 @@ export default function Queue() {
   });
   const [isPaused, setIsPaused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGeneratingBill, setIsGeneratingBill] = useState(false);
   const [newVehicle, setNewVehicle] = useState({
     name: "", type: "", id: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: ""
   });
@@ -93,6 +94,13 @@ export default function Queue() {
 
   const removeCompleted = () => {
     setQueue(prev => prev.filter(item => item.status !== "Complete"));
+  };
+
+  const generateBill = () => {
+    setIsGeneratingBill(true);
+    setTimeout(() => {
+      setIsGeneratingBill(false);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -325,13 +333,9 @@ export default function Queue() {
         </div>
       )}
 
-      {/* Main Layout */}
       <div className="flex gap-4 flex-1">
-        {/* Billing Section - 25% width */}
-        <div className="w-1/4 bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700">
+        <div className="w-1/4 bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700 h-fit">
           <h2 className="text-2xl font-bold mb-6 text-white border-b border-gray-600 border-opacity-50 pb-4">Billing Section</h2>
-          
-          {/* Current Vehicle Filling */}
           <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4 border border-gray-700 border-opacity-30">
             <h3 className="text-sm font-semibold text-gray-300 mb-3 uppercase tracking-wide">Current Vehicle</h3>
             <div className="space-y-2.5 text-sm">
@@ -353,8 +357,6 @@ export default function Queue() {
               </div>
             </div>
           </div>
-
-          {/* Filling Progress */}
           <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4 border border-gray-700 border-opacity-30">
             <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Filling Progress</h3>
             <div className="space-y-3.5">
@@ -376,8 +378,6 @@ export default function Queue() {
               </div>
             </div>
           </div>
-
-          {/* Bill Calculation */}
           <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-4 border border-blue-700 border-opacity-40">
             <h3 className="text-sm font-semibold text-gray-300 mb-4 border-b border-gray-600 border-opacity-50 pb-3 uppercase tracking-wide">Bill Summary</h3>
             <div className="space-y-3 text-sm">
@@ -392,11 +392,11 @@ export default function Queue() {
               <div className="border-t border-gray-600 border-opacity-50 pt-3">
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-500">Base Price</span>
-                  <span className="text-white">{calculateBill().basePrice.toFixed(2)}</span>
+                  <span className="text-white">₹{calculateBill().basePrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Tax (10%)</span>
-                  <span className="text-white">{calculateBill().tax.toFixed(2)}</span>
+                  <span className="text-white">₹{calculateBill().tax.toFixed(2)}</span>
                 </div>
               </div>
               <div className="border-t border-green-600 border-opacity-50 pt-3 bg-gradient-to-r from-green-900 to-green-900 bg-opacity-25 rounded-lg px-3 py-3">
@@ -407,11 +407,11 @@ export default function Queue() {
               </div>
             </div>
           </div>
+          <button onClick={generateBill} disabled={isGeneratingBill} className="mt-6 w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 disabled:from-blue-800 disabled:to-blue-700 disabled:opacity-75 text-white font-bold py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed">
+            {isGeneratingBill ? "Generating Bill..." : "Generate Bill"}
+          </button>
         </div>
-
-        {/* Tabbed Content Section - 75% width */}
         <div className="flex-1 flex flex-col">
-          {/* Tab Navigation */}
           <div className="flex gap-2 mb-4">
             <button
               onClick={() => setActiveTab("queue")}
@@ -434,10 +434,8 @@ export default function Queue() {
               System Status & Filling Control
             </button>
           </div>
-
-          {/* Queue Tab */}
           {activeTab === "queue" && (
-            <div className="max-h-screen flex flex-col bg-[rgba(38,40,40,1)] rounded-lg p-6 shadow-lg border border-gray-700 overflow-hidden">
+            <div className="flex flex-col bg-[rgba(38,40,40,1)] rounded-lg p-6 shadow-lg border border-gray-700 overflow-hidden flex-1 max-h-[calc(130vh-120px)]">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4 flex-shrink-0">
                 <div>
                   <h1 className="text-3xl font-bold text-white">Refueling Queue</h1>
@@ -459,7 +457,7 @@ export default function Queue() {
                 </div>
               </div>
 
-              <div className="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto flex-1 mb-6">
+              <div className="py-5 px-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto flex-1 mb-6">
                 {queue.map(item => (
                   <div
                     key={item.id}
@@ -537,11 +535,8 @@ export default function Queue() {
               </div>
             </div>
           )}
-
-          {/* System Status & Filling Control Tab */}
           {activeTab === "system" && (
-            <div className="flex-1 flex flex-col gap-4 overflow-y-auto">
-              {/* System Status Section */}
+            <div className="flex flex-col gap-4 flex-1 max-h-[calc(130vh-120px)]">
               <div className="bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700">
                 <h2 className="text-2xl font-bold mb-5 text-white border-b border-gray-600 border-opacity-50 pb-4">System Status</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -569,12 +564,9 @@ export default function Queue() {
                   </div>
                 </div>
               </div>
-
-              {/* Filling Control Section */}
-              <div className="bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700 flex-1">
+              <div className="bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700">
                 <h2 className="text-2xl font-bold mb-5 text-white border-b border-gray-600 border-opacity-50 pb-4">Filling Control</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Filling Info */}
                   <div className="space-y-4">
                     <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 border border-gray-700 border-opacity-40">
                       <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Vehicle Information</h3>
@@ -598,8 +590,6 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Filling Progress Bar */}
                   <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 flex flex-col justify-center border border-blue-700 border-opacity-30">
                     <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Filling Progress</h3>
                     <div className="space-y-4">
