@@ -60,10 +60,11 @@ const Navbar = () => {
     { name: "System Control", href: "/system-control" },
     { name: "Settings", href: "/settings" },
     { name: "System Design", href: "/system-design" },
+    { name: "HRS Visuals", href: "/hrs-visuals" },
   ];
 
   return (
-    <div className="w-full fixed bg-[rgba(31,_33,_33,_1)] text-gray-100">
+    <div className="w-full fixed bg-[rgba(31,_33,_33,_1)] text-gray-100 z-10">
       <nav className="bg-gradient-to-r from-[#1e3a5f] to-[#2c5282] text-white p-4 md:p-6 flex flex-wrap justify-between items-center border-b-4 border-blue-400">
         <Link href={"/"}>
           <div className="flex items-center gap-2 flex-shrink-0">

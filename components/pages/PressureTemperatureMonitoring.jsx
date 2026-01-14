@@ -3,6 +3,40 @@
 import React, { useState, useEffect } from "react";
 import Temp from "../Temp";
 
+// Export a reusable hook that provides sensor data (no UI)
+export const useSensorData = (intervalMs = 2000) => {
+  const [sensors, setSensors] = useState({
+    leakageSensors: [0.002, 0.004, 0.007],
+    exhaustFan: "ON",
+    flowRate: 0.45,
+    flameSensors: [false, false, false],
+    valvePositions: [true, true, false, false],
+    emergencyLight: false,
+  });
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      const newLeakage = Array.from({ length: 3 }, () => +(Math.random() * 0.01).toFixed(3));
+      const newFlame = Array.from({ length: 3 }, () => Math.random() > 0.7);
+      const anyLeak = newLeakage.some((val) => val > 0.007);
+      const anyFlame = newFlame.some(Boolean);
+
+      setSensors({
+        leakageSensors: newLeakage,
+        exhaustFan: Math.random() > 0.5 ? "ON" : "OFF",
+        flowRate: +(Math.random() * 1.2).toFixed(2),
+        flameSensors: newFlame,
+        valvePositions: Array.from({ length: 4 }, () => Math.random() > 0.5),
+        emergencyLight: anyLeak || anyFlame,
+      });
+    }, intervalMs);
+
+    return () => clearInterval(id);
+  }, [intervalMs]);
+
+  return sensors;
+};
+
 const PressureTemperatureMonitoring = () => {
   // 🧱 Initial Cascade Tanks
   const initialTanks = [
@@ -14,15 +48,8 @@ const PressureTemperatureMonitoring = () => {
 
   const [tanks, setTanks] = useState(initialTanks);
 
-  // 🧭 Sensor Data
-  const [sensors, setSensors] = useState({
-    leakageSensors: [0.002, 0.004, 0.007],
-    exhaustFan: "ON",
-    flowRate: 0.45,
-    flameSensors: [false, false, false],
-    valvePositions: [true, true, false, false],
-    emergencyLight: false,
-  });
+  // use shared sensor hook
+  const sensors = useSensorData();
 
   // 🎨 Pressure color
   const getPressureColor = (pressure, maxPressure) => {
@@ -57,19 +84,6 @@ const PressureTemperatureMonitoring = () => {
           };
         })
       );
-
-      const newLeakage = Array.from({ length: 3 }, () => +(Math.random() * 0.01).toFixed(3));
-      const anyLeak = newLeakage.some((val) => val > 0.007);
-      const anyFlame = sensors.flameSensors.some(Boolean);
-
-      setSensors({
-        leakageSensors: newLeakage,
-        exhaustFan: Math.random() > 0.5 ? "ON" : "OFF",
-        flowRate: +(Math.random() * 1.2).toFixed(2),
-        flameSensors: Array.from({ length: 3 }, () => Math.random() > 0.7),
-        valvePositions: Array.from({ length: 4 }, () => Math.random() > 0.5),
-        emergencyLight: anyLeak || anyFlame,
-      });
     }, 2000);
 
     return () => clearInterval(interval);
