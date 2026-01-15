@@ -81,7 +81,7 @@ const HRSVisuals = () => {
               {selected ? (
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white mb-3">{selected}</div>
-                  <div className="text-sm text-gray-300">Details panel — placeholder for video or explanation.</div>
+                  <div className="text-sm text-gray-300">placeholder for video</div>
                 </div>
               ) : (
                 <div className="text-gray-400">No problem selected. Click a problem on the right.</div>
@@ -95,13 +95,13 @@ const HRSVisuals = () => {
           <div className="bg-[rgba(38,_40,_40,_1)] rounded-lg p-4 h-[calc(100vh-5.5rem)] overflow-hidden">
             <h3 className="text-lg font-semibold text-white mb-3">Problem Statements</h3>
             <div className="flex flex-col gap-2 h-full">
-              <div className="overflow-y-auto pr-1 hide-scrollbar">
+              <div className="overflow-y-auto pr-1 hide-scrollbar space-y-3">
               {problems.map((p, i) => (
                 <button
                   key={p}
                   onClick={() => setSelected(p)}
-                  className={`w-full text-left py-2 px-3 rounded transition-colors hover:bg-gray-700/40 hover:text-white text-gray-300 whitespace-normal break-words ${
-                    selected === p ? 'bg-gray-700/60 text-white' : 'bg-transparent'
+                  className={`w-full text-left py-2 px-3 rounded transition-colors hover:bg-gray-700/20 cursor-pointer hover:text-white text-gray-300 whitespace-normal break-words ${
+                    selected === p ? 'bg-gray-700/30 text-white' : 'bg-transparent'
                   }`}
                 >
                   {p}
