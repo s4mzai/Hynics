@@ -48,8 +48,15 @@ const PressureTemperatureMonitoring = () => {
 
   const [tanks, setTanks] = useState(initialTanks);
 
-  // use shared sensor hook
-  const sensors = useSensorData();
+  // 🧭 Sensor Data
+  const [sensors, setSensors] = useState({
+    leakageSensors: [0.002, 0.004, 0.007],
+    exhaustFan: "ON",
+    flowRate: 0.45,
+    flameSensors: [false, false, false],
+    valvePositions: [true, true, false, false],
+    emergencyLight: false,
+  });
 
   // 🎨 Pressure color
   const getPressureColor = (pressure, maxPressure) => {
@@ -84,6 +91,19 @@ const PressureTemperatureMonitoring = () => {
           };
         })
       );
+
+      const newLeakage = Array.from({ length: 3 }, () => +(Math.random() * 0.01).toFixed(3));
+      const anyLeak = newLeakage.some((val) => val > 0.007);
+      const anyFlame = sensors.flameSensors.some(Boolean);
+
+      setSensors({
+        leakageSensors: newLeakage,
+        exhaustFan: Math.random() > 0.5 ? "ON" : "OFF",
+        flowRate: +(Math.random() * 1.2).toFixed(2),
+        flameSensors: Array.from({ length: 3 }, () => Math.random() > 0.7),
+        valvePositions: Array.from({ length: 4 }, () => Math.random() > 0.5),
+        emergencyLight: anyLeak || anyFlame,
+      });
     }, 2000);
 
     return () => clearInterval(interval);
