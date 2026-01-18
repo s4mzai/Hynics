@@ -60,6 +60,7 @@ export default function Queue() {
   const [isPaused, setIsPaused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGeneratingBill, setIsGeneratingBill] = useState(false);
+  const [isDispensing, setIsDispensing] = useState(false);
   const [newVehicle, setNewVehicle] = useState({
     name: "", type: "", id: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: ""
   });
@@ -103,48 +104,46 @@ export default function Queue() {
     }, 2000);
   };
 
+  const startDispensing = () => {
+    setIsDispensing(true);
+    // Reset filling progress to 0 when starting
+    setFillingData(prev => ({
+      ...prev,
+      percentageFilled: 0,
+      massFilled: 0
+    }));
+    // Set the selected vehicle status to "In Progress"
+    setQueue(prev => prev.map(item => 
+      item.id === selectedVehicleId && item.status !== "Complete"
+        ? { ...item, status: "In Progress" }
+        : item
+    ));
+  };
+
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
-      setQueue(prev => {
-        const newQueue = [...prev];
-        newQueue.forEach(item => {
-          if (item.status !== "Complete" && item.status !== "Scheduled" && item.eta > 0) {
-            item.eta = Math.max(0, item.eta - 1);
+      // Update filling progress for selected vehicle only when dispensing
+      if (isDispensing) {
+        setFillingData(prev => {
+          if (prev.percentageFilled >= 100) {
+            setIsDispensing(false);
+            // Set the vehicle status to "Complete" when filling is done
+            setQueue(prevQueue => prevQueue.map(item => 
+              item.id === prev.vehicleId
+                ? { ...item, status: "Complete" }
+                : item
+            ));
+            return { ...prev, percentageFilled: 100, massFilled: prev.totalMass };
           }
+          const newPercentage = Math.min(100, prev.percentageFilled + Math.random() * 3);
+          const newMassFilled = (newPercentage / 100) * prev.totalMass;
+          return { ...prev, percentageFilled: newPercentage, massFilled: newMassFilled };
         });
-        const inProgressIndex = newQueue.findIndex(item => item.status === "In Progress");
-        if (inProgressIndex !== -1 && newQueue[inProgressIndex].eta === 0) {
-          newQueue[inProgressIndex].status = "Complete";
-          const nextWaitingIndex = newQueue.findIndex(item => item.status === "Waiting");
-          if (nextWaitingIndex !== -1) {
-            newQueue[nextWaitingIndex].status = "In Progress";
-          }
-        }
-        if (inProgressIndex === -1 || newQueue[inProgressIndex].eta === 0) {
-          const waitingCount = newQueue.filter(item => item.status === "Waiting").length;
-          if (waitingCount < 3) {
-            const nextScheduledIndex = newQueue.findIndex(item => item.status === "Scheduled");
-            if (nextScheduledIndex !== -1) {
-              newQueue[nextScheduledIndex].status = "Waiting";
-            }
-          }
-        }
-        return newQueue;
-      });
-      
-      // Update filling progress for selected vehicle
-      setFillingData(prev => {
-        if (prev.percentageFilled >= 100) {
-          return { ...prev, percentageFilled: 0, massFilled: 0 };
-        }
-        const newPercentage = Math.min(100, prev.percentageFilled + Math.random() * 3);
-        const newMassFilled = (newPercentage / 100) * prev.totalMass;
-        return { ...prev, percentageFilled: newPercentage, massFilled: newMassFilled };
-      });
+      }
     }, 2000);
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, isDispensing]);
 
   useEffect(() => {
     const statusInterval = setInterval(() => {
@@ -165,16 +164,6 @@ export default function Queue() {
         h2Purity: Math.max(95, Math.min(100, prev.h2Purity + (Math.random() * 0.5 - 0.25))),
         leakageDetection: Math.max(0, Math.min(0.01, prev.leakageDetection + (Math.random() * 0.004 - 0.002)))
       }));
-      
-      // Update filling data
-      setFillingData(prev => {
-        if (prev.percentageFilled >= 100) {
-          return { ...prev, percentageFilled: 0, massFilled: 0 };
-        }
-        const newPercentage = Math.min(100, prev.percentageFilled + Math.random() * 5);
-        const newMassFilled = (newPercentage / 100) * prev.totalMass;
-        return { ...prev, percentageFilled: newPercentage, massFilled: newMassFilled };
-      });
     }, 2000);
     return () => clearInterval(statusInterval);
   }, [isPaused]);
@@ -190,15 +179,14 @@ export default function Queue() {
   // Handle vehicle selection from queue
   const handleVehicleSelect = (vehicleId) => {
     setSelectedVehicleId(vehicleId);
+    setIsDispensing(false); // Reset dispensing when selecting a new vehicle
     const selectedVehicle = queue.find(v => v.id === vehicleId);
     if (selectedVehicle) {
-      const filledPercentage = Math.random() * 80; // Random filling percentage for demo
-      const massFilled = (filledPercentage / 100) * selectedVehicle.fuel;
       setFillingData({
         vehicleId: selectedVehicle.id,
         vehicleName: selectedVehicle.name,
-        percentageFilled: filledPercentage,
-        massFilled: massFilled,
+        percentageFilled: 0,
+        massFilled: 0,
         totalMass: selectedVehicle.fuel,
         driverName: selectedVehicle.driverName,
         paymentMode: selectedVehicle.paymentMode
@@ -334,8 +322,24 @@ export default function Queue() {
       )}
 
       <div className="flex gap-4 flex-1">
-        <div className="w-1/4 bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700 h-fit">
-          <h2 className="text-2xl font-bold mb-6 text-white border-b border-gray-600 border-opacity-50 pb-4">Billing Section</h2>
+        <div className="w-1/4 flex flex-col gap-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab("queue")}
+              className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
+                activeTab === "queue"
+                  ? "bg-blue-700 text-white"
+                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
+            >
+              Queue
+            </button>
+            <button onClick={openAddModal} className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors">
+              Add to Queue
+            </button>
+          </div>
+          <div className="bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700 h-fit">
+            <h2 className="text-2xl font-bold mb-6 text-white border-b border-gray-600 border-opacity-50 pb-4">Billing Section</h2>
           <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4 border border-gray-700 border-opacity-30">
             <h3 className="text-sm font-semibold text-gray-300 mb-3 uppercase tracking-wide">Current Vehicle</h3>
             <div className="space-y-2.5 text-sm">
@@ -354,27 +358,6 @@ export default function Queue() {
               <div className="flex justify-between">
                 <span className="text-gray-500">Payment Mode</span>
                 <span className="text-white font-medium text-xs">{fillingData.paymentMode}</span>
-              </div>
-            </div>
-          </div>
-          <div className="mb-6 bg-[rgba(31,33,33,1)] rounded-lg p-4 border border-gray-700 border-opacity-30">
-            <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Filling Progress</h3>
-            <div className="space-y-3.5">
-              <div>
-                <div className="flex justify-between mb-2.5 text-sm">
-                  <span className="text-gray-500">Filled</span>
-                  <span className="text-blue-400 font-bold">{fillingData.percentageFilled.toFixed(1)}%</span>
-                </div>
-                <div className="w-full bg-gray-700 bg-opacity-50 rounded-full h-3 overflow-hidden border border-gray-600 border-opacity-30">
-                  <div
-                    className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 h-3 rounded-full transition-all duration-300 shadow-lg shadow-blue-500/20"
-                    style={{ width: `${fillingData.percentageFilled}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Mass Filled</span>
-                <span className="text-white font-bold">{fillingData.massFilled.toFixed(2)} / {fillingData.totalMass} kg</span>
               </div>
             </div>
           </div>
@@ -410,19 +393,10 @@ export default function Queue() {
           <button onClick={generateBill} disabled={isGeneratingBill} className="mt-6 w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 disabled:from-blue-800 disabled:to-blue-700 disabled:opacity-75 text-white font-bold py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed">
             {isGeneratingBill ? "Generating Bill..." : "Generate Bill"}
           </button>
+          </div>
         </div>
         <div className="flex-1 flex flex-col">
           <div className="flex gap-2 mb-4">
-            <button
-              onClick={() => setActiveTab("queue")}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                activeTab === "queue"
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
-            >
-              Queue
-            </button>
             <button
               onClick={() => setActiveTab("system")}
               className={`px-6 py-2 rounded-lg font-medium transition-all ${
@@ -441,9 +415,6 @@ export default function Queue() {
                   <h1 className="text-3xl font-bold text-white">Refueling Queue</h1>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={openAddModal} className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors">
-                    Add to Queue
-                  </button>
                   <button onClick={() => setIsPaused(!isPaused)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${isPaused ? "bg-green-700 hover:bg-green-600" : "bg-yellow-700 hover:bg-yellow-600"}`}>
                     {isPaused ? "Resume Queue" : "Pause Queue"}
                   </button>
@@ -566,30 +537,7 @@ export default function Queue() {
               </div>
               <div className="bg-gradient-to-br from-[rgba(38,40,40,1)] to-[rgba(31,33,33,1)] rounded-xl p-6 shadow-lg border border-gray-700">
                 <h2 className="text-2xl font-bold mb-5 text-white border-b border-gray-600 border-opacity-50 pb-4">Filling Control</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 border border-gray-700 border-opacity-40">
-                      <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Vehicle Information</h3>
-                      <div className="space-y-3 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Vehicle ID</span>
-                          <span className="text-white font-medium text-xs">{fillingData.vehicleId}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Vehicle Name</span>
-                          <span className="text-white font-medium text-xs">{fillingData.vehicleName}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Driver Name</span>
-                          <span className="text-white font-medium text-xs">{fillingData.driverName}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Payment Mode</span>
-                          <span className="text-white font-medium text-xs">{fillingData.paymentMode}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
                   <div className="bg-gradient-to-br from-[rgba(31,33,33,1)] to-[rgba(25,27,27,1)] rounded-lg p-5 flex flex-col justify-center border border-blue-700 border-opacity-30">
                     <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">Filling Progress</h3>
                     <div className="space-y-4">
@@ -623,6 +571,13 @@ export default function Queue() {
                         </div>
                       </div>
                     </div>
+                    <button 
+                      onClick={startDispensing} 
+                      disabled={isDispensing || fillingData.percentageFilled >= 100}
+                      className="mt-6 w-full bg-gradient-to-r from-green-700 to-green-600 hover:from-green-600 hover:to-green-500 disabled:from-gray-700 disabled:to-gray-600 disabled:opacity-75 text-white font-bold py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {isDispensing ? "Dispensing..." : fillingData.percentageFilled >= 100 ? "Dispensing Complete" : "Start Dispensing"}
+                    </button>
                   </div>
                 </div>
               </div>
