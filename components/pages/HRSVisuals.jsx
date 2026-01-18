@@ -5,15 +5,16 @@ import { useSensorData } from '@/components/pages/PressureTemperatureMonitoring'
 
 const HRSVisuals = () => {
   const problems = [
-    'Problem statement 1',
-    'Problem statement 2',
-    'Problem statement 3',
-    'Problem statement 4',
-    'Problem statement 5',
-    'Problem statement 6',
+    'Situation 1',
+    'Situation 2',
+    'Situation 3',
+    'Situation 4',
+    'Situation 5',
+    'Situation 6',
   ];
 
   const [selected, setSelected] = useState(null);
+  const [activeTab, setActiveTab] = useState('simulationScreen');
   const sensors = useSensorData();
 
   return (
@@ -74,17 +75,60 @@ const HRSVisuals = () => {
             </div>
           </div>
 
-          {/* Lower: screen area that shows selected problem text, fills remaining space */}
-          <div className="flex-1 bg-[rgba(38,_40,_40,_1)] rounded-lg p-4 overflow-hidden border border-gray-700">
-            <h2 className="text-lg font-semibold text-white mb-3">Problem Screen</h2>
-            <div className="h-full rounded-md bg-[rgba(31,_33,_33,_1)] flex items-center justify-center text-gray-400 p-4 overflow-auto border border-gray-700">
-              {selected ? (
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white mb-3">{selected}</div>
-                  <div className="text-sm text-gray-300">placeholder for video</div>
+          {/* Lower: screen area with tabs */}
+          <div className="flex-1 bg-[rgba(38,_40,_40,_1)] rounded-lg p-4 overflow-hidden border border-gray-700 flex flex-col">
+            {/* Tab buttons */}
+            <div className="flex gap-2 mb-3">
+              <button
+                onClick={() => setActiveTab('simulationInformation')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeTab === 'simulationInformation'
+                    ? 'bg-[rgba(31,_33,_33,_1)] text-white border border-gray-600'
+                    : 'bg-transparent text-gray-400 hover:text-white hover:bg-gray-700/20'
+                }`}
+              >
+                Simulation Information
+              </button>
+              <button
+                onClick={() => setActiveTab('simulationScreen')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeTab === 'simulationScreen'
+                    ? 'bg-[rgba(31,_33,_33,_1)] text-white border border-gray-600'
+                    : 'bg-transparent text-gray-400 hover:text-white hover:bg-gray-700/20'
+                }`}
+              >
+                Simulation Screen
+              </button>
+            </div>
+
+            {/* Tab content */}
+            <div className="flex-1 rounded-md bg-[rgba(31,_33,_33,_1)] flex items-center justify-center text-gray-400 p-4 overflow-auto border border-gray-700">
+              {activeTab === 'simulationInformation' ? (
+                <div className="w-full h-full">
+                  <h2 className="text-lg font-semibold text-white mb-3">Simulation Information</h2>
+                  {selected ? (
+                    <div className="text-gray-300">
+                      <p className="mb-2">Selected Situation: <span className="text-white font-semibold">{selected}</span></p>
+                      <p className="text-sm text-gray-400">Simulation information details will be displayed here.</p>
+                    </div>
+                  ) : (
+                    <div className="text-gray-400">No situation selected. Click a situation on the right.</div>
+                  )}
                 </div>
               ) : (
-                <div className="text-gray-400">No problem selected. Click a problem on the right.</div>
+                <div className="w-full h-full">
+                  <h2 className="text-lg font-semibold text-white mb-3">
+                    Simulation Screen{selected ? `: ${selected}` : ''}
+                  </h2>
+                  {selected ? (
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-white mb-3">{selected}</div>
+                      <div className="text-sm text-gray-300">placeholder for video</div>
+                    </div>
+                  ) : (
+                    <div className="text-gray-400">No situation selected. Click a situation on the right.</div>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -93,7 +137,7 @@ const HRSVisuals = () => {
         {/* Right: 25% ghost buttons */}
         <div className="w-1/4 flex-none">
           <div className="bg-[rgba(38,_40,_40,_1)] rounded-lg p-4 h-[calc(100vh-5.5rem)] overflow-hidden">
-            <h3 className="text-lg font-semibold text-white mb-3">Problem Statements</h3>
+            <h3 className="text-lg font-semibold text-white mb-3">Situations</h3>
             <div className="flex flex-col gap-2 h-full">
               <div className="overflow-y-auto pr-1 hide-scrollbar space-y-3">
               {problems.map((p, i) => (
