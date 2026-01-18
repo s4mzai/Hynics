@@ -31,7 +31,7 @@ function getStatusColor(status) {
   }
 }
 
-export default function Queue() {
+export default function FillingControl() {
   const [queue, setQueue] = useState(initialQueueItems);
   const [activeTab, setActiveTab] = useState("queue");
   const [selectedVehicleId, setSelectedVehicleId] = useState("DR-002");
@@ -412,7 +412,7 @@ export default function Queue() {
             <div className="flex flex-col bg-[rgba(38,40,40,1)] rounded-lg p-6 shadow-lg border border-gray-700 overflow-hidden flex-1 max-h-[calc(130vh-120px)]">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4 flex-shrink-0">
                 <div>
-                  <h1 className="text-3xl font-bold text-white">Refueling Queue</h1>
+                  <h1 className="text-3xl font-bold text-white">Filling Control</h1>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button onClick={() => setIsPaused(!isPaused)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${isPaused ? "bg-green-700 hover:bg-green-600" : "bg-yellow-700 hover:bg-yellow-600"}`}>
@@ -588,3 +588,4 @@ export default function Queue() {
     </div>
   );
 }
+
