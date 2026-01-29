@@ -138,22 +138,22 @@ export default function FillingControl() {
       // Table Content
       pdf.text("Hydrogen Fuel", 25, 155);
       pdf.text(`${fillingData.massFilled.toFixed(2)} kg`, 100, 155);
-      pdf.text(`₹${PRICE_PER_KG}`, 140, 155);
-      pdf.text(`₹${(fillingData.massFilled * PRICE_PER_KG).toFixed(2)}`, 170, 155);
+      pdf.text(`Rs. ${PRICE_PER_KG}`, 140, 155);
+      pdf.text(`Rs. ${(fillingData.massFilled * PRICE_PER_KG).toFixed(2)}`, 170, 155);
       
       // Line
       pdf.line(20, 165, 190, 165);
       
       // Totals
       pdf.text("Subtotal:", 140, 180);
-      pdf.text(`₹${(fillingData.massFilled * PRICE_PER_KG).toFixed(2)}`, 170, 180);
+      pdf.text(`Rs. ${(fillingData.massFilled * PRICE_PER_KG).toFixed(2)}`, 170, 180);
       
       pdf.text("Tax (10%):", 140, 190);
-      pdf.text(`₹${((fillingData.massFilled * PRICE_PER_KG) * 0.1).toFixed(2)}`, 170, 190);
+      pdf.text(`Rs. ${((fillingData.massFilled * PRICE_PER_KG) * 0.1).toFixed(2)}`, 170, 190);
       
       pdf.setFontSize(12);
       pdf.text("Total:", 140, 200);
-      pdf.text(`₹${calculateBill().total.toFixed(2)}`, 170, 200);
+      pdf.text(`Rs. ${calculateBill().total.toFixed(2)}`, 170, 200);
       
       // Footer
       pdf.setFontSize(10);
