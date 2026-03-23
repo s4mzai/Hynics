@@ -55,7 +55,7 @@ const Navbar = () => {
   const menuItems = [
     { name: "Leak Detection", href: "/leak-detection" },
     { name: "Flow Measurement", href: "/flow" },
-    { name: "Pressure & Temperature", href: "/pressure-temp-monitoring" },
+    { name: "Sensor Monitoring", href: "/sensor-monitoring" },
     { name: "Filling Control", href: "/filling-control" },
     { name: "System Control", href: "/system-control" },
     { name: "Settings", href: "/settings" },

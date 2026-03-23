@@ -6,7 +6,12 @@ const SystemControl = () => {
     { name: "Main Compressor", status: "Running", indicator: "green", isOn: true },
     { name: "Pressure Booster", status: "Standby", indicator: "yellow", isOn: false },
     { name: "Generator", status: "Off", indicator: "red", isOn: false },
-    { name: "Cascade", status: "Running", indicator: "green", isOn: true },
+    { name: "Vent", status: "Off", indicator: "red", isOn: false },
+    { name: "Exhaust", status: "Off", indicator: "red", isOn: false },
+    { name: "Cascade 1", status: "Running", indicator: "green", isOn: true },
+    { name: "Cascade 2", status: "Running", indicator: "green", isOn: true },
+    { name: "Cascade 3", status: "Running", indicator: "green", isOn: true },
+    { name: "Cascade 4", status: "Running", indicator: "green", isOn: true },
     { name: "Secondary Storage", status: "Running", indicator: "green", isOn: true },
     { name: "Decant Pannel", status: "Running", indicator: "green", isOn: true },
     { name: "Priority Panel", status: "Running", indicator: "green", isOn: true }

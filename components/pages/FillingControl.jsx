@@ -8,11 +8,10 @@ import html2canvas from "html2canvas";
 //   "H2-Truck 1", "H2-Survey-X", "H2-Van", "H2-Bus", "H2-Forklift"
 // ];
 
-const vehicleTypes = ["Car", "Truck", "Van", "Bus", "Forklift", "Delivery", "Survey"];
 const paymentModes = ["Cash", "Card", "Online Transfer", "Wallet", "Credit"];
 const PRICE_PER_KG = 50;
 const initialQueueItems = [
-  { id: "TEST-001", name: "Test Vehicle", type: "Car", status: "Waiting", fuel: 5.0, eta: 6, driverName: "Test Driver", carNumber: "TEST-123", amountToFill: 5.0, paymentMode: "Cash" }
+  { id: "TEST-001", name: "Test Vehicle", status: "Waiting", fuel: 5.0, eta: 6, driverName: "Test Driver", carNumber: "TEST-123", amountToFill: 5.0, paymentMode: "Cash" }
 ];
 
 function getStatusColor(status) {
@@ -59,11 +58,11 @@ export default function FillingControl() {
   const [isGeneratingBill, setIsGeneratingBill] = useState(false);
   const [isDispensing, setIsDispensing] = useState(false);
   const [newVehicle, setNewVehicle] = useState({
-    name: "", type: "", id: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: ""
+    name: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: ""
   });
 
   const openAddModal = () => {
-    setNewVehicle({ name: "", type: "", id: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: "" });
+    setNewVehicle({ name: "", fuel: 0, eta: 0, status: "", driverName: "", carNumber: "", amountToFill: 0, paymentMode: "" });
     setIsModalOpen(true);
   };
 
@@ -88,9 +87,9 @@ export default function FillingControl() {
 
   const generatePDF = () => {
     try {
-      // Get the selected vehicle to get car number
+      // Get the selected vehicle to get registration number
       const selectedVehicle = queue.find(v => v.id === selectedVehicleId);
-      const carNumber = selectedVehicle ? selectedVehicle.carNumber : "Car number not provided";
+      const carNumber = selectedVehicle ? selectedVehicle.carNumber : "Registration no not provided";
       
       const pdf = new jsPDF();
       
@@ -122,8 +121,8 @@ export default function FillingControl() {
       // Vehicle Information
       pdf.text("Vehicle Details:", 120, 70);
       pdf.text(`Vehicle: ${fillingData.vehicleName}`, 120, 80);
-      pdf.text(`Vehicle ID: ${fillingData.vehicleId}`, 120, 90);
-      pdf.text(`Vehicle Number: ${carNumber}`, 120, 100);
+      pdf.text(`Queue No: ${getQueueNumberById(fillingData.vehicleId)}`, 120, 90);
+      pdf.text(`Registration No: ${carNumber}`, 120, 100);
       pdf.text(`Payment Mode: ${fillingData.paymentMode}`, 120, 110);
       
       // Table Headers
@@ -181,21 +180,14 @@ export default function FillingControl() {
   };
 
   const addNewVehicle = () => {
-    if (!newVehicle.name || !newVehicle.type || !newVehicle.id || newVehicle.fuel <= 0 || !newVehicle.driverName || !newVehicle.carNumber || !newVehicle.paymentMode) {
+    if (!newVehicle.name || newVehicle.fuel <= 0 || !newVehicle.driverName || !newVehicle.carNumber || !newVehicle.paymentMode) {
       alert("Please fill all fields with valid values");
       return;
     }
     
-    const existingVehicle = queue.find(item => item.id === newVehicle.id);
-    if (existingVehicle) {
-      alert("Vehicle ID already exists. Please use a different ID.");
-      return;
-    }
-    
     const vehicleToAdd = {
-      id: newVehicle.id.trim(),
+      id: `QUEUE-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       name: newVehicle.name.trim(),
-      type: newVehicle.type,
       status: "Scheduled",
       fuel: parseFloat(String(newVehicle.fuel)),
       eta: Math.ceil(parseFloat(String(newVehicle.fuel)) / 0.8),
@@ -283,6 +275,11 @@ export default function FillingControl() {
     return { basePrice, tax, total };
   };
 
+  const getQueueNumberById = (vehicleId) => {
+    const index = queue.findIndex((vehicle) => vehicle.id === vehicleId);
+    return index === -1 ? "-" : index + 1;
+  };
+
   const handleVehicleSelect = (vehicleId) => {
     setSelectedVehicleId(vehicleId);
     setIsDispensing(false);
@@ -318,31 +315,6 @@ export default function FillingControl() {
                     onChange={handleInputChange}
                     className="w-full bg-gray-700 rounded px-3 py-2 text-white text-sm"
                     placeholder="e.g., H2-Car 1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 mb-1 text-sm">Vehicle Type</label>
-                  <select
-                    name="type"
-                    value={newVehicle.type}
-                    onChange={handleInputChange}
-                    className="w-full bg-gray-700 rounded px-3 py-2 text-white text-sm"
-                  >
-                    <option value="">Select Type</option>
-                    {vehicleTypes.map((type, index) => (
-                      <option key={index} value={type}>{type}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-300 mb-1 text-sm">Vehicle ID</label>
-                  <input
-                    type="text"
-                    name="id"
-                    value={newVehicle.id}
-                    onChange={handleInputChange}
-                    className="w-full bg-gray-700 rounded px-3 py-2 text-white text-sm"
-                    placeholder="e.g., DR-011"
                   />
                 </div>
                 <div>
@@ -383,7 +355,7 @@ export default function FillingControl() {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 mb-1 text-sm">Car Number</label>
+                  <label className="block text-gray-300 mb-1 text-sm">Registration No.</label>
                   <input
                     type="text"
                     name="carNumber"
@@ -562,8 +534,8 @@ export default function FillingControl() {
                 <div>
                   <p><strong>Vehicle Details:</strong></p>
                   <p>Vehicle: {fillingData.vehicleName}</p>
-                  <p>Vehicle ID: {fillingData.vehicleId}</p>
-                  <p>Vehicle Number: {queue.find(v => v.id === selectedVehicleId)?.carNumber || "Car number not provided"}</p>
+                  <p>Queue No: {getQueueNumberById(fillingData.vehicleId)}</p>
+                  <p>Registration No: {queue.find(v => v.id === selectedVehicleId)?.carNumber || "Registration no not provided"}</p>
                   <p>Payment Mode: {fillingData.paymentMode}</p>
                 </div>
               </div>
@@ -639,8 +611,8 @@ export default function FillingControl() {
             <h3 className="text-sm font-semibold text-gray-300 mb-3 uppercase tracking-wide">Current Vehicle</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Vehicle ID</span>
-                <span className="text-white font-medium text-xs">{fillingData.vehicleId}</span>
+                <span className="text-gray-500">Queue No.</span>
+                <span className="text-white font-medium text-xs">{getQueueNumberById(fillingData.vehicleId)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Vehicle Name</span>
@@ -762,18 +734,17 @@ export default function FillingControl() {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <h3 className="text-base font-bold text-white leading-tight">{item.name}</h3>
-                        <div className="text-xs text-gray-500 mt-1">{item.type}</div>
                       </div>
                       <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${getStatusColor(item.status)}`}>{item.status}</span>
                     </div>
-                    <div className="text-xs text-gray-500 mb-2 font-mono">ID: {item.id}</div>
+                    <div className="text-xs text-gray-500 mb-2 font-mono">Queue No: {queue.findIndex(vehicle => vehicle.id === item.id) + 1}</div>
                     <div className="space-y-1.5 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-400">Driver</span>
                         <span className="font-medium text-white text-xs">{item.driverName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-400">Car Number</span>
+                        <span className="text-gray-400">Registration No.</span>
                         <span className="font-medium text-white text-xs">{item.carNumber}</span>
                       </div>
                       <div className="flex justify-between">
@@ -880,6 +851,9 @@ export default function FillingControl() {
           )}
         </div>
       </div>
+      {isDispensing && (
+        <div className="fixed inset-0 z-[100] cursor-wait" />
+      )}
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import PressureTemperatureMonitoring from '@/components/pages/PressureTemperatureMonitoring'
 
-const PressureTemperatureMonitoringPage = () => {
+const SensorMonitoringPage = () => {
   return (
     <PressureTemperatureMonitoring/>
   )
 }
 
-export default PressureTemperatureMonitoringPage
+export default SensorMonitoringPage

@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react';
 
 const LeakDetection = () => {
   const initialCards = [
-    { id: 1, label: 'Primary Storage', value: 1.7, status: 'normal' },
-    { id: 2, label: 'Secondary Storage', value: 1.7, status: 'normal' },
-    { id: 3, label: 'Compressor Room', value: 2.5, status: 'caution' },
-    { id: 4, label: 'Dispenser 1', value: 0.5, status: 'normal' },
-    { id: 5, label: 'Vehicle Bay', value: 5.3, status: 'danger' },
+    { id: 1, label: 'Storage system', value: 1.7, status: 'normal' },
+    { id: 2, label: 'Compressor Room', value: 2.5, status: 'caution' },
+    { id: 3, label: 'Dispenser 1', value: 0.5, status: 'normal' },
+    { id: 4, label: 'Vehicle Bay', value: 5.3, status: 'danger' },
   ];
 
   const [cards, setCards] = useState(initialCards);

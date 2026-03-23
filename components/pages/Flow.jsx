@@ -17,8 +17,10 @@ const Flow = () => {
   ]);
 
   const [totalizers, setTotalizers] = useState([
-    { id: 'cascade-total', label: 'Cascade', current: 1245.7, max: 1500, currentUnit: 'kg total', maxUnit: 'kg max' },
-    { id: 'secondary-total', label: 'Secondary tank', current: 2156.8, max: 3000, currentUnit: 'kg total', maxUnit: 'kg max' },
+    { id: 'cascade-1-total', label: 'Cascade 1', current: 1245.7, max: 1500, currentUnit: 'kg total', maxUnit: 'kg max' },
+    { id: 'cascade-2-total', label: 'Cascade 2', current: 1156.8, max: 1500, currentUnit: 'kg total', maxUnit: 'kg max' },
+    { id: 'cascade-3-total', label: 'Cascade 3', current: 938.8, max: 1500, currentUnit: 'kg total', maxUnit: 'kg max' },
+    { id: 'cascade-4-total', label: 'Cascade 4', current: 1044.2, max: 1500, currentUnit: 'kg total', maxUnit: 'kg max' },
     { id: 'dispensed-total', label: 'Total Dispensed', current: 938.8, max: null, currentUnit: 'kg total', maxUnit: 'kg max' }
   ]);
 
@@ -52,13 +54,14 @@ const Flow = () => {
         setTotalizers(prevTotalizers => {
           const getFlow = id => updatedFlowRates.find(f => f.id === id)?.value || 0;
           const cascadeFlow = getFlow('cascade');
-          const secondaryFlow = getFlow('secondary');
           const dispensingFlow = getFlow('dispensing');
 
           return prevTotalizers.map(total => {
             let flowRate = 0;
-            if (total.id === 'cascade-total') flowRate = cascadeFlow;
-            else if (total.id === 'secondary-total') flowRate = secondaryFlow;
+            if (total.id === 'cascade-1-total') flowRate = cascadeFlow * 0.25;
+            else if (total.id === 'cascade-2-total') flowRate = cascadeFlow * 0.25;
+            else if (total.id === 'cascade-3-total') flowRate = cascadeFlow * 0.25;
+            else if (total.id === 'cascade-4-total') flowRate = cascadeFlow * 0.25;
             else if (total.id === 'dispensed-total') flowRate = dispensingFlow;
 
             const increment = flowRate * (elapsedSeconds / 3600);
